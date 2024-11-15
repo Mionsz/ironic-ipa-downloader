@@ -16,6 +16,7 @@ ADD http://certificates.intel.com/repository/certificates/IntelSHA2RootChain-Bas
 ADD http://certificates.intel.com/repository/certificates/Intel%20Root%20Certificate%20Chain%20Base64.zip /opt/intel/certs/intel-root-ca-chain.zip
 ADD http://certificates.intel.com/repository/certificates/PublicSHA2RootChain-Base64-crosssigned.zip /opt/intel/certs/public-sha2-root-crsigned.zip
 
+SHELL ["/bin/bash", "-ex", "-o", "pipefail", "-c"]
 RUN dnf upgrade -y && \
     dnf install -y \
         tar \
@@ -27,8 +28,9 @@ RUN dnf upgrade -y && \
     unzip /opt/intel/certs/intel-sha2-root-chain.zip -d /usr/local/share/ca-certificates && \
     unzip /opt/intel/certs/public-sha2-root-crsigned.zip -d /usr/local/share/ca-certificates && \
     rm -rf /opt/intel/certs && \
-    update-ca-certificates
+    update-ca-trust
 
 COPY ./get-resource.sh /usr/local/bin/get-resource.sh
 
+SHELL ["/bin/bash", "-c"]
 ENTRYPOINT ["usr/local/bin/get-resource.sh"]
